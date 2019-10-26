@@ -19,11 +19,19 @@ def lowercase_text(sentences):
         sentences[idx] = sent_without_punct.strip()
     return sentences
 
+def remove_short_sentences(sentences):
+    sents = []
+    for sentence in sentences:
+        if len(sentence.split()) > 2:
+            sents.append(sentence)
+    return sents
+
 def main():
     with open('finetuning-data/legal.txt') as legal_file:
         legal_data = legal_file.read()
         legal_data = sent_tokenizer(legal_data)
         legal_data = lowercase_text(legal_data)
+        legal_data = remove_short_sentences(legal_data)
     with open('finetuning-data/news.txt') as news_file:
         news_data = news_file.read()
         news_data = sent_tokenizer(news_data)
@@ -39,7 +47,14 @@ def main():
 
     merged_df = pd.concat([legal_df, news_df])
     merged_df = merged_df.sample(frac=1, random_state=42)
+    merged_df['index'] = [i for i in range(merged_df.shape[0])]
+    merged_df['alpha'] = ['a']*merged_df.shape[0]
+    cols = merged_df.columns.to_list()
+    cols = [cols[2],cols[1],cols[0],cols[3]]
+    merged_df = merged_df[cols]
+
     print(merged_df.head(20))
+    merged_df.to_csv("tuning-data.tsv",header=False, index=False, sep="\t")
 
 if __name__ == "__main__":
     main()

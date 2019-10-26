@@ -1,0 +1,1 @@
+bert-serving-start -model_dir=uncased_L-12_H-768_A-12 -tuned_model_dir=finetuned-model/ -ckpt_name=model.ckpt-130
