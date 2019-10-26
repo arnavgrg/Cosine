@@ -41,6 +41,7 @@
         </script>
    </head>
    <body id="mainBody">
+    <p id="test"></p>
       <div id="heatmapContainerWrapper">
          <div class="heatmap" id="heatmapContainer">
             <div id='pdf-viewer'></div>
@@ -50,7 +51,7 @@
       <script type="text/javascript">
          var PDFJS = window['pdfjs-dist/build/pdf'];
          
-         url = "/static/{{MY_PDF_AYYO}}";
+         url = "/static/tesla.pdf";
          var thePdf = null;
          var scale = 1.5;
          var pageSize = 0;
@@ -94,8 +95,8 @@
          minOpacity: 0,
          blur: .5,
          gradient: {
-         '.5': 'white',
-         '.8': 'yellow',
+         '.05': 'white',
+         '.50': 'yellow',
          '.95': 'red'
          }
              });
@@ -106,12 +107,23 @@
              var width = widthVals;
              var height = heightVals;
              
-             jsonString = httpGet("/getDataOnDocument/{{MY_PDF_AYYO}}?height=" + height + "&width=" + width);
+             jsonString = httpGet("/getDataOnDocument/tesla.pdf?height=" + height + "&width=" + width);
               // This is the actual file structure
               obVal = JSON.parse(jsonString);
               console.log(obVal);
+
+              var sum = 0;
+              for( var i = 0; i < obVal.length; i++ ){
+                  sum += parseInt( obVal[i].y, 10 ); //don't forget to add the base
+              }
+
+              var avg = sum/obVal.length;
+
+
+
+              console.log(avg);
              var data = {
-               max: max,
+               max: 50,
                data: obVal
              };
              heatmapInstance.setData(data);
@@ -131,7 +143,7 @@
          ws.onmessage = function(evt) {
               document.getElementById("test").innerHTML = evt.data;
          };
-         setInterval(function(){ws.send(String((window.scrollY / document.documentElement.scrollHeight)) + ",{{MY_PDF_AYYO}}");}, 100);
+         setInterval(function(){ws.send(String((window.scrollY / document.documentElement.scrollHeight)) + ",tesla.pdf");}, 500);
       </script>
       <canvas id="the-canvas"></canvas>
    </body>
