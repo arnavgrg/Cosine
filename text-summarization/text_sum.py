@@ -60,6 +60,9 @@ class TextSummarizer(object):
             self.sum_length = 20
 
     def get_summary(self):
+        '''
+        Returns a list of the most important sentences in the legal document.
+        '''
         self.set_number_of_items()
         print("Cleaning text input")
         self.lowercase_text()
@@ -69,8 +72,9 @@ class TextSummarizer(object):
         self.build_similarity_matrix()
         print("Getting similarity scores")
         summary = self.get_important_sentences()
-        for sentence in summary:
-            print("> ",sentence)
+        for sentence in summary: #
+            print("> ",sentence) #
+        return summary
 
 ts = TextSummarizer(data)
 ts.get_summary()
