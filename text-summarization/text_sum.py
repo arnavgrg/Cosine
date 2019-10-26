@@ -20,7 +20,7 @@ class TextSummarizer(object):
         # Split text into sentences 
         self.sentences = sent_tokenize(self.text) 
         self.length = len(self.sentences)
-        self.bc = BertClient()
+        self.bc = BertClient(check_length=False)
 
     def remove_punctuation(self, sentence):
         return sentence.translate(str.maketrans('', '', string.punctuation))
