@@ -1,0 +1,9 @@
+{
+  "name": "sample-http",
+  "version": "0.0.1",
+  "dependencies": {
+  	"@google-cloud/storage": "^3.0.0",
+    "escape-html": "*",
+    "request": "*"
+  }
+}
