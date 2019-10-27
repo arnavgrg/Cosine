@@ -132,7 +132,6 @@
          ws.onmessage = function(evt) {
               document.getElementById("test").innerHTML = evt.data;
          };
-         setInterval(function(){ws.send(String(window.scrollY / window.innerWidth) * 100);}, 100);
       </script>
       <canvas id="the-canvas"></canvas>
    </body>

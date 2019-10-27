@@ -108,8 +108,9 @@
              var height = heightVals;
              
              jsonString = httpGet("/getDataOnDocument/tesla.pdf?height=" + height + "&width=" + width);
+             console.log("JSON STRING", jsonString);
               // This is the actual file structure
-              obVal = JSON.parse(jsonString);
+              obVal = JSON.parse(jsonString).data;
               console.log(obVal);
 
               var sum = 0;
@@ -143,7 +144,12 @@
          ws.onmessage = function(evt) {
               document.getElementById("test").innerHTML = evt.data;
          };
-         setInterval(function(){ws.send(String((window.scrollY / document.documentElement.scrollHeight)) + ",tesla.pdf");}, 500);
+        setInterval(function(){
+          x = (window.scrollY / document.documentElement.scrollHeight);
+          if ((!isNaN(x)) && (window.scrollY !== 0) && ((window.scrollY + window.innerHeight) < (document.documentElement.scrollHeight))){
+            ws.send(String(x) + ",tesla.pdf");
+          }
+        }, 100);
       </script>
       <canvas id="the-canvas"></canvas>
    </body>

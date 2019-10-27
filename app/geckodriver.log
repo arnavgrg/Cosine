@@ -13,3 +13,6 @@ console.error: BroadcastService:
   Stack:
     remoteSettingsFunction/remoteSettings.pollChanges@resource://services-settings/remote-settings.js:201:13
 
+2019-10-26 16:36:43.098 firefox-bin[25567:4006451] HIToolbox: received notification of WindowServer event port death.
+2019-10-26 16:36:43.098 firefox-bin[25567:4006451] port matched the WindowServer port created in BindCGSToRunLoop
+2019-10-26 16:36:43.103 firefox-bin[25567:5311266] +[NSXPCSharedListener endpointForReply:withListenerName:]: an error occurred while attempting to obtain endpoint for listener 'ClientCallsAuxiliary': Connection invalid
