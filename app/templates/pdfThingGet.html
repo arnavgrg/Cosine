@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8">
+      <title>AYYO CALHACKS PDF HEATMAP THING</title>
+      <style>
+         body, html, h2 { margin:0; padding:0;}
+         body { font-family:sans-serif; }
+         body * { font-weight:200;}
+         #heatmapContainerWrapper { width:100%; position:absolute; background:rgba(0,0,0,.1); }
+         #heatmapContainer { width:100%;}
+         #heatmapLegend { background:white; position:absolute; bottom:0; right:0; padding:10px; }
+         #min { float:left; }
+         #max { float:right; }
+         h1 { position:absolute; background:black; color:white; padding:10px; font-weight:200;}
+         #all-examples-info { position:absolute; background:white; font-size:16px; padding:20px; top:100px; width:350px; line-height:150%; border:1px solid rgba(0,0,0,.2);}
+      </style>
+      <style>
+         #pdf-viewer {
+         width: 100%;
+         height: 100%;
+         background: rgba(0, 0, 0, 0.1);
+         overflow: auto;
+         }
+         .pdf-page-canvas {
+         display: block;
+         margin: 5px auto;
+         border: 1px solid rgba(0, 0, 0, 0.2);
+         }
+      </style>
+      <script src="https://npmcdn.com/pdfjs-dist/build/pdf.js"></script>
+      <script>
+      function httpGet(theUrl)
+        // The network request grabs the json containing mp3 structure
+        {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+            xmlHttp.send( null );
+            return xmlHttp.responseText;
+        }
+        </script>
+   </head>
+   <body id="mainBody">
+    <p id="test"></p>
+      <div id="heatmapContainerWrapper">
+         <div class="heatmap" id="heatmapContainer">
+            <div id='pdf-viewer'></div>
+         </div>
+      </div>
+      <script src="/static/heatmap.js"></script>
+      <script type="text/javascript">
+         var PDFJS = window['pdfjs-dist/build/pdf'];
+         
+         url = "/static/tesla.pdf";
+         var thePdf = null;
+         var scale = 1.5;
+         var pageSize = 0;
+         
+         PDFJS.getDocument(url).promise.then(function(pdf) {
+             thePdf = pdf;
+             viewer = document.getElementById('pdf-viewer');
+         
+             for(page = 1; page <= pdf.numPages; page++) {
+               canvas = document.createElement("canvas");    
+               canvas.className = 'pdf-page-canvas';         
+               viewer.appendChild(canvas);            
+               renderPage(page, canvas);
+             }
+         });
+         
+         function renderPage(pageNumber, canvas) {
+             thePdf.getPage(pageNumber).then(function(page) {
+               console.log(pageNumber);
+               console.log(document.body.clientWidth);
+               viewport = page.getViewport(document.body.clientWidth / page.getViewport(1.0).width);
+               canvas.height = viewport.height;
+               pageSize = canvas.height;
+               canvas.width = viewport.width;          
+               page.render({canvasContext: canvas.getContext('2d'), viewport: viewport});
+               if (pageNumber === thePdf.numPages){
+                 console.log(pageSize * thePdf.numPages);
+                 resizeIframe(pageSize * thePdf.numPages, canvas.width);
+               }
+         });
+         }
+         
+           function resizeIframe(heightVals, widthVals) {
+             document.getElementById("pdf-viewer").setAttribute("style","width:" + widthVals + "px!important");
+             document.getElementById("heatmapContainerWrapper").setAttribute("style","width:" + widthVals + "px!important");
+             document.getElementById("mainBody").setAttribute("style","width:" + widthVals + "px!important");
+             var heatmapInstance = h337.create({
+               container: document.querySelector('.heatmap'),
+               radius: 20,
+         maxOpacity: .3,
+         minOpacity: 0,
+         blur: .5,
+         gradient: {
+         '.05': 'white',
+         '.50': 'yellow',
+         '.95': 'red'
+         }
+             });
+             var points = [];
+             var max = 0;
+
+
+             var width = widthVals;
+             var height = heightVals;
+             
+             jsonString = httpGet("/getDataOnDocument/tesla.pdf?height=" + height + "&width=" + width);
+             console.log("JSON STRING", jsonString);
+              // This is the actual file structure
+              obVal = JSON.parse(jsonString).data;
+              console.log(obVal);
+
+              var sum = 0;
+              for( var i = 0; i < obVal.length; i++ ){
+                  sum += parseInt( obVal[i].y, 10 ); //don't forget to add the base
+              }
+
+              var avg = sum/obVal.length;
+
+
+
+              console.log(avg);
+             var data = {
+               max: 50,
+               data: obVal
+             };
+             heatmapInstance.setData(data);
+         
+         }
+         
+         
+      </script>
+      <script type="text/javascript">
+         var ws = new WebSocket("ws://localhost:8000/chrisDocusignEndpointDotExe");
+         ws.onopen = function() {
+             ws.send("socket open");
+         };
+         ws.onclose = function(evt) {
+             alert("socket closed");
+         };
+         ws.onmessage = function(evt) {
+              document.getElementById("test").innerHTML = evt.data;
+         };
+        setInterval(function(){
+          x = (window.scrollY / document.documentElement.scrollHeight);
+          if ((!isNaN(x)) && (window.scrollY !== 0) && ((window.scrollY + window.innerHeight) < (document.documentElement.scrollHeight))){
+            ws.send(String(x) + ",tesla.pdf");
+          }
+        }, 100);
+      </script>
+      <canvas id="the-canvas"></canvas>
+   </body>
+</html>
