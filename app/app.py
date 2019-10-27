@@ -12,6 +12,7 @@ from wand.image import Image
 from PIL import ImageFont, ImageDraw, ImageEnhance
 import PIL
 import pdfParse
+import random
 
 app = Flask(__name__)
 
@@ -20,6 +21,8 @@ sockets = Sockets(app)
 DB = json.load(open("documentDataDB.json"))
 
 RESPONSES = [None]
+
+LOGS = [None]
 
 def send_text_to_api():
 	print convert_pdf_to_png("static/tesla.pdf")
@@ -55,6 +58,25 @@ def echo_socket_docusign(ws):
 			print("Exception in get updated from docusign" + str(exp))
 		time.sleep(.1)
 
+def add_log(stringVal):
+	LOGS.append(stringVal)
+
+@sockets.route('/logs')
+def logs(webSocket):
+	prev = "AYYY"
+	while True:
+		try:
+			if prev != LOGS[-1]:
+				if LOGS[-1] != None:
+					webSocket.send(str(LOGS[-1]))
+				else:
+					webSocket.send("-")
+				prev = LOGS[-1]
+		except Exception as exp:
+			print traceback.print_exc()
+			print("Exception in get logs" + str(exp))
+		time.sleep(.1)
+
 def convert_pdf_to_png(filenameVal):
 	pdf = Image(filename=filenameVal, resolution=200)
 
@@ -80,11 +102,13 @@ def remove_points_from_image(filenameVal):
 	source_img = PIL.Image.open("out.png").convert("RGBA")
 	width, height = source_img.size
 	draw = ImageDraw.Draw(source_img)
+	print("STARTED LOOP")
 	for val in DB[filenameVal.partition("/")[2]].keys():
 		y = float(height * float(val))
 		# print(y)
 		draw.rectangle(((0, y), (width, y+40)), fill="white")
 	# draw.text((20, 70), "something123", font=ImageFont.truetype("font_path123"))
+	print("ENDING LOOP")
 	source_img.save("newFile.png", "png")
 	return pdfParse.Get_text_from_image("newFile.png")
 
@@ -122,9 +146,7 @@ def doAnalytics(documentName):
 
 @app.route("/pdfAnalyticsView/<documentName>")
 def doAnalyticsView(documentName):
-	with open('documentDataDB.json', 'w') as outfile:
-		json.dump(DB, outfile, indent=4)
-	return jsonify(DB.get(documentName, []))
+	return render_template('pdfThingView.html')
 	# return render_template('pdfThingView.html', MY_PDF_AYYO="/static/{}".format(documentName))
 
 @app.route("/getDataOnDocument/<documentName>")
@@ -165,6 +187,14 @@ def admin():
 def index():
 	return render_template('index.html')
 
+@app.route('/add', methods=['GET'])
+def add():
+	if random.randint(1,4) == 3:
+		LOGS.append(json.dumps({"type": "sentiment", "amount": str(random.randint(50, 100))}))
+	else:
+		LOGS.append("AYYYYY THIS WORKS" + str(random.randint(1,10000)))
+	return ""
+
 @app.route('/textAnalytics', methods=['GET', 'POST'])
 def text_analytics():
 	return jsonify({"result": textstat.flesch_reading_ease(request.form.get("text"))})
@@ -172,5 +202,6 @@ def text_analytics():
 
 if __name__ == '__main__':
 	# send_text_to_api()
-	app.run(debug=True)
-	# Start with gunicorn -k flask_sockets.worker app:app
+
+	app.run()
+	# Start with 9

@@ -55,36 +55,108 @@
           <img width="100px" src="/static/logo.png">
         </div>
 
-<center><font color="#4e73df"> <span class=" " style="font-size: 24pt">RECIPIENT POINT OF VIEW</font></center>
+<font color="#4e73df"> <p style="padding-top:12px;font-size: 20pt;margin-left:auto; margin-right:0;"><b>SENDER POINT OF VIEW</b></font></p>
 
 
 
 
         </nav>
         <!-- End of Topbar -->
-        <div class="container-fluid">
-          <script src="https://demo.docusign.net/clickapi/sdk/latest/docusign-click.js"></script>
-
-
-
-        </div>
 
         <!-- Begin Page Content -->
         <!-- /.container-fluid -->
+<div class="container-fluid">
 
-<center>NO DOCUMENTS AVAILABLE TO SIGN</center>
 
-      </div>
-      <!-- End of Main Content -->
 
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+            <a onclick="update_values()" href="javascript:void(0);" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Send New Document</a>
+          </div>
+
+          <!-- Content Row -->
+
+          <div class="row">
+
+            <!-- Area Chart -->
+            <div class="col-xl-3">
+              <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                  <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
+                  
+
+
+
+                </div>
+                <!-- Card Body -->
+                <div class="card-body" id="test">
+           
+                </div>
+              </div>
+            </div>
+
+            <!-- Pie Chart -->
+            <div class="col">
+              <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                  <h6 class="m-0 font-weight-bold text-primary">Document Comprehension</h6>
+                  <div class="dropdown no-arrow">
+                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                      <div class="dropdown-header">Dropdown Header:</div>
+                      <a class="dropdown-item" href="#">Action</a>
+                      <a class="dropdown-item" href="#">Another action</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
+                  </div>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                  <p align="center">
+                  <iframe width="500px" height="500px" frameBorder="0" src="../pdfAnalyticsView/tesla.pdf"></iframe>
+                </p>
+
+                </div>
+              </div>
+            </div>
+
+          <div class="col-xl-3">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Projects</h6>
+                </div>
+                <div class="card-body">
+                  <h4 class="small font-weight-bold">Server Migration <span class="float-right">20%</span></h4>
+                  <div class="progress mb-4">
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                  <h4 class="small font-weight-bold">Sales Tracking <span class="float-right">40%</span></h4>
+                  <div class="progress mb-4">
+                    <div class="progress-bar bg-warning" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                  <h4 class="small font-weight-bold">Customer Database <span class="float-right">60%</span></h4>
+                  <div class="progress mb-4">
+                    <div class="progress-bar" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                  <h4 id="sentimentOut" class="small font-weight-bold">Percentage Complete<span class="float-right">0%</span></h4>
+                  <div class="progress mb-4">
+                    <div class="progress-bar bg-info" role="progressbar" style="width: 80%" id="sentiment" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                  <h4 class="small font-weight-bold">Account Setup <span class="float-right">Complete!</span></h4>
+                  <div class="progress">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
 
       <!-- Footer -->
       <footer class="sticky-footer bg-white">
@@ -142,7 +214,43 @@
   <!-- Page level custom scripts -->
   <script src="/static/js/demo/chart-area-demo.js"></script>
   <script src="/static/js/demo/chart-pie-demo.js"></script>
+
   <script>
+
+  var logs = [];
+  for (var i=0; i<21; i++){
+    logs.push(" ");
+  }
+  var ws = new WebSocket("ws://localhost:8000/logs");
+         ws.onopen = function() {
+             ws.send("socket open");
+         };
+         ws.onclose = function(evt) {
+             alert("socket closed");
+         };
+         ws.onmessage = function(evt) {
+              logs.push(evt.data);
+              if (logs.length > 20){
+                logs.shift();
+              }
+              document.getElementById("test").innerHTML = "";
+              for (var i=0; i<logs.length; i++){
+                console.log(String(logs[i]));
+                if (String(logs[i]).includes("sentiment")){
+                  obVal = JSON.parse(evt.data).amount;
+                  document.getElementById("sentimentOut").innerHTML = obVal + "%";
+
+                  document.getElementById("sentiment").setAttribute("aria-valuenow", obVal);
+                  document.getElementById("sentiment").setAttribute("style", "width: " + obVal + "%");
+                  console.log("AYYY");
+
+                }
+                document.getElementById("test").innerHTML += logs[i] + "<br>";
+             
+              }
+         };
+
+
   $('.modal').on('shown.bs.modal',function(){      //correct here use 'shown.bs.modal' event which comes in bootstrap3
   $(this).find('#pdfSource').attr('src','/pdfAnalyticsGenerate/tesla.pdf')
 })
@@ -150,6 +258,11 @@
   $('.modal').on('hidden.bs.modal', function () {
     httpGet("/update");
 });
+
+
+  function update_values(){
+    document.getElementById("pendingRequests").innerHTML = "1";
+  }
   </script>
 
 </body>

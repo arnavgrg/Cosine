@@ -5,6 +5,7 @@ import pytesseract
 from wand.image import Image as wi
 import gc
 import json
+import requests
 
 DB = json.load(open("ocrCache.json"))
 print(type(DB))
@@ -27,7 +28,11 @@ def Get_text_from_image(pdf_path):
     DB[pdf_path] = text
     with open('ocrCache.json', 'w') as outfile:
         json.dump(DB, outfile, indent=4)
-    return text
+    x = text
+    print(x)
+    print("Send text")
+    res = requests.post("https://us-central1-cal-hacks-2019-257203.cloudfunctions.net/performSentiment", data={"text": x})
+    return res.json()
 
 if __name__ == '__main__':
     print(Get_text_from_image("static/tesla.pdf"))

@@ -269,7 +269,7 @@
   <script>
   $('.modal').on('shown.bs.modal',function(){      //correct here use 'shown.bs.modal' event which comes in bootstrap3
   $(this).find('#pdfSource').attr('src','/pdfAnalyticsGenerate/tesla.pdf')
-})
+});
 
   $('.modal').on('hidden.bs.modal', function () {
     httpGet("/update");
