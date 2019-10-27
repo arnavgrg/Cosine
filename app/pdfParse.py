@@ -6,7 +6,8 @@ from wand.image import Image as wi
 import gc
 import json
 
-DB = open("ocrCache.json")
+DB = json.load(open("ocrCache.json"))
+print(type(DB))
 
 def Get_text_from_image(pdf_path):
     if pdf_path in DB:
