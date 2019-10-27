@@ -12,8 +12,12 @@ docx2txt==0.8
 EbookLib==0.17.1
 extract-msg==0.23.1
 Flask==1.1.1
+Flask-Sockets==0.2.1
+gevent==1.4.0
+gevent-websocket==0.10.1
 google-resumable-media==0.4.1
 googleapis-common-protos==1.6.0
+greenlet==0.4.15
 grpcio==1.24.3
 idna==2.8
 IMAPClient==2.1.0
