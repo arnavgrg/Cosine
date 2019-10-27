@@ -21,8 +21,12 @@ base_path = 'https://demo.docusign.net/restapi'
 APP_PATH = os.path.dirname(os.path.abspath(__file__))
 
 
-def create_document():
+def create_document(summary):
     """ Creates document 1 -- an html document"""
+    listOfSentences = "<ol>"
+    for i in range(len(summary)):
+        listOfSentences += "<li>{}</li>".format(summary[i])
+    listOfSentences += "</ol>"
 
     return f"""
     <!DOCTYPE html>
@@ -36,6 +40,7 @@ def create_document():
             color: darkblue;margin-bottom: 0;">Summary of Contract</h1>
         <h4>Ordered by {signer_name}</h4>
         <p style="margin-top:0em; margin-bottom:0em;">Email: {signer_email}</p>
+        {listOfSentences}
         <!-- Note the anchor tag for the signature field is in white. -->
         <h3 style="margin-top:3em;">Agreed: <span style="color:white;">**signature_1**/</span></h3>
         </body>
@@ -43,7 +48,7 @@ def create_document():
   """
 
 
-def send_document_for_signing():
+def send_document_for_signing(summary):
 
     """
 
@@ -58,7 +63,7 @@ def send_document_for_signing():
     # content_bytes = file.read()
     # base64_file_content = base64.b64encode(content_bytes).decode('ascii')
 
-    base64_file_content = base64.b64encode(bytes(create_document(), "utf-8")).decode("ascii")
+    base64_file_content = base64.b64encode(bytes(create_document(summary), "utf-8")).decode("ascii")
     document = Document( # create the DocuSign document object 
         document_base64 = base64_file_content, 
         name = 'Example document', # can be different from actual file name
@@ -127,5 +132,3 @@ def send_document_for_signing():
     results = envelope_api.create_envelope(account_id, envelope_definition=envelope_definition)
 
     return results
-
-send_document_for_signing()

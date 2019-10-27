@@ -1,0 +1,9 @@
+setup.py
+tools/__init__.py
+tools/email_client.py
+tools/pdfParse.py
+tools/text_sum.py
+tools.egg-info/PKG-INFO
+tools.egg-info/SOURCES.txt
+tools.egg-info/dependency_links.txt
+tools.egg-info/top_level.txt
