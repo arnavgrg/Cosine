@@ -11,8 +11,8 @@ import networkx as nx
 from nltk.tokenize import sent_tokenize
 nltk.download('punkt')
 
-with open('sample.json') as text_sample:
-    data = json.load(text_sample)
+#with open('sample.json') as text_sample:
+#    data = json.load(text_sample)
 
 class TextSummarizer(object):
     def __init__(self, payload):
@@ -82,9 +82,9 @@ class TextSummarizer(object):
         print("Getting similarity scores")
         summary = self.get_important_sentences()
         print("Top 10 summary points:")
-        for sentence in summary: #
-            print("> ",sentence) #
+        #for sentence in summary: #
+        #   print("> ",sentence) #
         return summary
 
-ts = TextSummarizer(data)
-ts.get_summary()
+#ts = TextSummarizer(data)
+#print(ts.get_summary())

@@ -12,6 +12,13 @@ from wand.image import Image
 from PIL import ImageFont, ImageDraw, ImageEnhance
 import PIL
 import pdfParse
+import email_client as email_form
+
+import os
+import sys
+sys.path.insert(0,'text-summarization/')
+
+import text_sum
 
 app = Flask(__name__)
 
@@ -169,6 +176,18 @@ def index():
 def text_analytics():
 	return jsonify({"result": textstat.flesch_reading_ease(request.form.get("text"))})
 	# return render_template('index.html')
+
+@app.route('/summarization', methods=['POST'])
+def run_summarization():
+    data = request.data
+    ts = text_sum.TextSummarizer(data)
+    result = ts.get_summary()
+    send_email(summary)
+    return jsonify({"result":["line"]})
+
+
+def send_email(summary):
+    email_form.send_email_for_signing(summary)
 
 if __name__ == '__main__':
 	# send_text_to_api()

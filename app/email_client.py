@@ -132,5 +132,3 @@ def send_document_for_signing(summary):
     results = envelope_api.create_envelope(account_id, envelope_definition=envelope_definition)
 
     return results
-
-send_document_for_signing()
