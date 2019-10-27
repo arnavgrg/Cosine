@@ -26,7 +26,7 @@ print(__file__)
 print(__name__)
 
 from tools import pdfParse, text_sum
-from tools import email_client as email_form
+from tools import email_client
 #from . import pdfParse
 #from . import email_client as email_form
 
@@ -191,6 +191,17 @@ def index():
 def text_analytics():
 	return jsonify({"result": textstat.flesch_reading_ease(request.form.get("text"))})
 	# return render_template('index.html')
+
+@app.route('/summary')
+def summary():
+    data = request.data
+    ts = text_sum.TextSummarizer(data) 
+    summary = ts.get_summary()
+    return jsonify({"status":True})
+
+def send_email(summary):
+    email_client.send_document_for_signing(summary)
+    
 
 if __name__ == '__main__':
 	# send_text_to_api()
