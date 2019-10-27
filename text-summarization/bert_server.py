@@ -6,7 +6,7 @@ def main():
                                      '-port', '5555',
                                      '-port_out', '5556',
                                      '-max_seq_len', '25',
-                                     '-num_worker', '2',
+                                     '-num_worker', '1',
                                      '-mask_cls_sep',
                                      '-cpu'])
     server = BertServer(args)

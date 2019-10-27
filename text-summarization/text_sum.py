@@ -21,6 +21,7 @@ class TextSummarizer(object):
         self.sum_length = 10 
         # Split text into sentences 
         self.bc = BertClient(check_length=False)
+        print("Server status:", self.bc.status)
 
     def get_paragraphs(self):
         text = self.payload["data"]
