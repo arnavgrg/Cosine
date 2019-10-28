@@ -148,6 +148,10 @@
           x = (window.scrollY / document.documentElement.scrollHeight);
           if ((!isNaN(x)) && (window.scrollY !== 0) && ((window.scrollY + window.innerHeight) < (document.documentElement.scrollHeight))){
             ws.send(String(x) + ",tesla.pdf");
+          } else if (window.scrollY === 0){
+            ws.send("-1" + ",tesla.pdf");
+          } else if (!((window.scrollY + window.innerHeight) < (document.documentElement.scrollHeight))){
+            ws.send("9999999" + ",tesla.pdf");
           }
         }, 100);
       </script>

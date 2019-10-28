@@ -9,20 +9,23 @@ from sklearn.metrics.pairwise import cosine_similarity
 import nltk
 import networkx as nx
 from nltk.tokenize import sent_tokenize
-nltk.download('punkt')
+import re
+# nltk.download('punkt')
 
-#with open('sample.json') as text_sample:
-#    data = json.load(text_sample)
+with open('sample.json') as text_sample:
+    data = json.load(text_sample)
 
 class TextSummarizer(object):
     def __init__(self, payload):
-        super().__init__()
+        # super().__init__()
         self.payload = payload
         self.sum_length = 10 
         # Split text into sentences 
 #        self.sentences = sent_tokenize(self.text) 
  #       self.length = len(self.sentences)
+        print("TRYING TO CONNECT")
         self.bc = BertClient(ip="52.249.61.86",check_length=False)
+        print("CONNECTED")
         print("Server status:", self.bc.status)
 
     def get_paragraphs(self):
@@ -39,7 +42,8 @@ class TextSummarizer(object):
         self.sentences = cleaned_sentences
 
     def remove_punctuation(self, sentence):
-        return sentence.translate(str.maketrans('', '', string.punctuation))
+
+        return re.sub(r'[^\w\s]','',sentence)
 
     def lowercase_text(self):
         # lower case all words in sentences 
@@ -86,5 +90,6 @@ class TextSummarizer(object):
         #   print("> ",sentence) #
         return summary
 
-#ts = TextSummarizer(data)
-#print(ts.get_summary())
+if __name__ == '__main__':
+    a = TextSummarizer(data)
+    print a.get_summary()

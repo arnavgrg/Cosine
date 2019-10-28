@@ -28,6 +28,16 @@
          border: 1px solid rgba(0, 0, 0, 0.2);
          }
       </style>
+      <script>
+      function httpGet(theUrl)
+        // The network request grabs the json containing mp3 structure
+        {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+            xmlHttp.send( null );
+            return xmlHttp.responseText;
+        }
+        </script>
       <script src="https://npmcdn.com/pdfjs-dist/build/pdf.js"></script>
    </head>
    <body id="mainBody">
@@ -36,11 +46,13 @@
             <div id='pdf-viewer'></div>
          </div>
       </div>
+
+      <canvas id="the-canvas"></canvas>
       <script src="/static/heatmap.js"></script>
       <script type="text/javascript">
          var PDFJS = window['pdfjs-dist/build/pdf'];
          
-         url = "{{MY_PDF_AYYO}}";
+         url = "/static/tesla.pdf";
          var thePdf = null;
          var scale = 1.5;
          var pageSize = 0;
@@ -84,36 +96,37 @@
          minOpacity: 0,
          blur: .5,
          gradient: {
-         '.5': 'white',
-         '.8': 'yellow',
+         '.05': 'white',
+         '.50': 'yellow',
          '.95': 'red'
          }
              });
              var points = [];
              var max = 0;
+
+
              var width = widthVals;
              var height = heightVals;
-             var len = width-500;
-             var step = 60;
-             var yStep = 200;
-             while (len--) {
-               var val = 1;
-               max = 1;
-               var point = {
-                 x: step,
-                 y: yStep,
-                 value: val
-               };
-               points.push(point);
-               step += 20;
-               if (step > width - 40){
-                   step = 60;
-                   yStep += 30;
-                 }
-             }
+             
+             jsonString = httpGet("/getDataOnDocument/tesla.pdf?height=" + height + "&width=" + width);
+             console.log("JSON STRING", jsonString);
+              // This is the actual file structure
+              obVal = JSON.parse(jsonString).data;
+              console.log(obVal);
+
+              var sum = 0;
+              for( var i = 0; i < obVal.length; i++ ){
+                  sum += parseInt( obVal[i].y, 10 ); //don't forget to add the base
+              }
+
+              var avg = sum/obVal.length;
+
+
+
+              console.log(avg);
              var data = {
-               max: max,
-               data: points
+               max: 50,
+               data: obVal
              };
              heatmapInstance.setData(data);
          
@@ -121,18 +134,5 @@
          
          
       </script>
-      <script type="text/javascript">
-         var ws = new WebSocket("ws://localhost:8000/chrisDocusignEndpointDotExe");
-         ws.onopen = function() {
-             ws.send("socket open");
-         };
-         ws.onclose = function(evt) {
-             alert("socket closed");
-         };
-         ws.onmessage = function(evt) {
-              document.getElementById("test").innerHTML = evt.data;
-         };
-      </script>
-      <canvas id="the-canvas"></canvas>
    </body>
 </html>

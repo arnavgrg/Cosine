@@ -27,6 +27,7 @@ def Get_text_from_image(pdf_path):
     DB[pdf_path] = text
     with open('ocrCache.json', 'w') as outfile:
         json.dump(DB, outfile, indent=4)
+
     return text
 
 if __name__ == '__main__':

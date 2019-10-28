@@ -1,1 +1,1 @@
-gunicorn -k flask_sockets.worker app:app
+gunicorn --bind=0.0.0.0:8000 -k flask_sockets.worker app:app
