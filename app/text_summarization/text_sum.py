@@ -11,8 +11,8 @@ import networkx as nx
 from nltk.tokenize import sent_tokenize
 nltk.download('punkt')
 
-#with open('sample.json') as text_sample:
-#    data = json.load(text_sample)
+with open('sample.json') as text_sample:
+    data = json.load(text_sample)
 
 class TextSummarizer(object):
     def __init__(self, payload):
@@ -86,5 +86,5 @@ class TextSummarizer(object):
         #   print("> ",sentence) #
         return summary
 
-#ts = TextSummarizer(data)
-#print(ts.get_summary())
+ts = TextSummarizer(data)
+print(ts.get_summary())

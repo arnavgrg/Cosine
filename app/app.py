@@ -40,9 +40,9 @@ DB = json.load(open("documentDataDB.json"))
 
 RESPONSES = [None]
 
-#def send_text_to_api():
+def send_text_to_api():
 #	print convert_pdf_to_png("static/tesla.pdf")
-#	return
+	return
 
 @app.route("/update")
 def updated():
