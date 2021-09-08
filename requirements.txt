@@ -43,7 +43,7 @@ pdfminer==20191020
 pdfminer.six==20181108
 pendulum==2.0.5
 pikepdf==1.6.5
-Pillow==6.2.1
+Pillow==8.3.2
 protobuf==3.10.0
 pyasn1==0.4.7
 pyasn1-modules==0.2.7
