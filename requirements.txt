@@ -29,7 +29,7 @@ itsdangerous==1.1.0
 Jinja2==2.10.3
 joblib==0.14.0
 lazy-object-proxy==1.4.2
-lxml==4.4.1
+lxml==4.9.1
 MarkupSafe==1.1.1
 mccabe==0.6.1
 networkx==2.4
